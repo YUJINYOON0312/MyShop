@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:insert="~{layout/admin-layout :: head}"/>
+	<!-- 해당하는 페이지의 css나 js를 아래에 -->
+	<link rel="stylesheet" href="/css/default.css">
+</head>
+<body class="flex">
+	<th:block th:insert="~{layout/admin-layout :: header}"/>
+	<main>
+		<h1>메인컨텐츠</h1>
+		<div class="wrap">
+			<p>카테고리 등록페이지</p>
+			<script type="text/javascript">
+				$(function(){
+					 $("input[name]").keyup(fnKeyup);
+				});
+				
+				function fnKeyup(){
+					var fcate=$(this);
+					var in_text=$(this).val().trim();
+					var parentName=fcate.parents("li").prev().find("input").val().trim();
+					if(in_text.length < 2){
+						fcate.next().text("");
+						return;
+					}
+					
+					$.ajax({
+						url:`admin/categories/${in_text}`,
+						success:function(result){
+							fcate.next().text(result);
+						}
+					});
+					
+					
+				}
+			
+			</script>
+			<form action="/admin/categories" method="post">
+				<ul class="flex">
+					<li>
+						<input type="text" id="cate1" name="name" placeholder="1차카테고리" required="required">
+						<div class="msg"></div>
+					</li>
+					<li>
+						<input type="text" name="name" placeholder="2차카테고리" required="required">
+						<div class="msg"></div>
+					</li>
+					<li>
+						<input type="text" name="name" placeholder="3차카테고리" required="required">
+						<div class="msg"></div>
+					</li>
+					<li>
+						<input type="text" name="name" placeholder="4차카테고리">
+						<div class="msg"></div>
+					</li>
+					<li>
+						<button>등록</button>
+					</li>
+				</ul>
+			</form>
+		</div>
+	</main>
+</body>
+</html>

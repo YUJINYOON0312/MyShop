@@ -13,7 +13,43 @@
 	 var idx=1;
 	  $(document).ready(function() {
 	      $('#summernote').summernote();
+	      
+	      //1차 카테고리 세팅
+	      getCategory();
 	  });
+	  
+	  function cateSelected(el){
+		  //어떤카테고리가 변경되었는지
+		  var depth=$(el).index();
+		  //0:1차, 1:2차 ...
+		  if(depth==2)return;  //마지막카테가 선택되면 종료
+		  
+		  var cateNo=$(el).val();
+		  //alert(cateNo);
+	  	$.ajax({
+			  url:`/common/categories/${cateNo}`,
+			  success: function(result){ //result==category.html
+				 // $(".first").html(result);
+			  	//현재 표현되는 카테고리 제일 마지막 위치에 삽입
+			  	//var length=$(".cate>.category").length;
+			  	$(`.cate>.category:gt(${depth})`).remove();
+			  	$(".cate>.category").last().after(result);
+			  	$(".cate>.category").last().find(".depth").text(depth+2+"차 카테고리");
+			  }
+	  	});
+	  }
+	  
+	  function getCategory(){
+		 
+		  $.ajax({
+			  url:"/common/categories",
+			  success: function(result){ //result==category.html
+				  $(".cate").html(result);
+				  $(".cate>.category").last().find(".depth").text("1차 카테고리");
+			  }
+		  });
+	  }
+	  
 	  function gimgChanged(el){
 		  var fileData=$(el)[0].files[0];
 		  console.log(fileData);
@@ -71,6 +107,13 @@
 			<p>상품등록 페이지</p>
 				<form>
 					<table>
+						<tr>
+							<td>카테고리</td>
+							<td>
+								<div class="cate">
+								</div>
+							</td>
+						</tr>
 						<tr>
 							<td>상품명</td>
 							<td><input type="text" name="title" placeholder="상품명을 입력하세요"></td>
